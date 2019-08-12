@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class Locations implements Map<Integer, Location> {
-    private static Map<Integer, Location> locations = new HashMap<>();
+    private static Map<Integer, Location> locations = new LinkedHashMap<>();
     private static Map<String, Integer> tempExit = new HashMap<String, Integer>();
 
     public static void main(String[] args) throws IOException {
@@ -12,7 +12,7 @@ public class Locations implements Map<Integer, Location> {
         try(BufferedWriter locFile = new BufferedWriter(new FileWriter("locations.txt"));
             BufferedWriter dirFile = new BufferedWriter(new FileWriter("directions.txt"))) {
             for(Location location : locations.values()) {
-                locFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+                locFile.write(location.getLocationID() + "," + location.getDescription() +  "\n");
                 for(String direction : location.getExits().keySet()) {
                     dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
                 }
@@ -29,6 +29,9 @@ public class Locations implements Map<Integer, Location> {
                 String[] data = input.split(",");
                 int loc = Integer.parseInt(data[0]);
                 String description = data[1];
+                for(int i=2; i<data.length; i++) {
+                    description += "," + data[i];
+                }
                 System.out.println("Imported loc: " + loc + ": " + description);
                 Map<String, Integer> tempExit = new HashMap<>();
                 locations.put(loc, new Location(loc, description, tempExit));
